@@ -1,116 +1,134 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Bảng Điểm Danh Sinh Viên</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; min-height: 100vh; padding: 24px 16px; color: #1a1a2e; }
-  .container { max-width: 1100px; margin: 0 auto; }
-  h1 { font-size: 22px; font-weight: 700; color: #0D47A1; margin-bottom: 18px; letter-spacing: 0.5px; }
-  .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 14px; }
-  .info-grid input { padding: 8px 12px; font-size: 13px; border: 1px solid #c5cae9; border-radius: 8px; background: #fff; color: #1a1a2e; outline: none; transition: border 0.2s; }
-  .info-grid input:focus { border-color: #1565C0; }
-  .cfg-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 13px; color: #555; margin-bottom: 16px; background: #fff; border-radius: 10px; padding: 10px 14px; border: 1px solid #e3e8f0; }
-  .cfg-row input { width: 62px; padding: 5px 8px; border: 1px solid #c5cae9; border-radius: 6px; font-size: 13px; text-align: center; outline: none; }
-  .cfg-row input:focus { border-color: #1565C0; }
-  .table-wrap { overflow-x: auto; border-radius: 12px; box-shadow: 0 2px 12px rgba(21,101,192,0.08); }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; min-width: 700px; }
-  thead tr { background: #1565C0; }
-  thead th { color: #fff; font-weight: 600; padding: 11px 10px; text-align: center; border: 1px solid #1976D2; white-space: nowrap; font-size: 13px; }
-  tbody tr { transition: background 0.15s; }
-  tbody tr:nth-child(even) { background: #f5f8ff; }
-  tbody tr:hover { background: #e8f0fe; }
-  tbody td { padding: 7px 8px; border: 0.5px solid #e0e6f0; vertical-align: middle; text-align: center; color: #1a1a2e; }
-  .td-name { text-align: left !important; min-width: 150px; }
-  .td-msv { min-width: 120px; }
-  .td-lop { min-width: 80px; }
-  .td-bar { min-width: 150px; }
-  .td-tiet { min-width: 110px; }
-  .td-cc { min-width: 90px; }
-  input.cell-input { border: none; background: transparent; font-size: 13px; color: #1a1a2e; font-family: inherit; width: 100%; outline: none; }
-  input.cell-input.msv { color: #1565C0; text-align: center; }
-  input.cell-input.lop { text-align: center; }
-  .bar-wrap { position: relative; background: #e0e0e0; border-radius: 6px; height: 26px; cursor: pointer; user-select: none; overflow: hidden; }
-  .bar-red { position: absolute; top: 0; left: 0; height: 100%; background: #E53935; border-radius: 6px 0 0 6px; transition: width 0.25s; }
-  .bar-green { position: absolute; top: 0; height: 100%; background: #43A047; border-radius: 0 6px 6px 0; transition: width 0.25s, left 0.25s; }
-  .bar-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; font-weight: 700; color: #fff; pointer-events: none; z-index: 2; white-space: nowrap; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
-  .vang-ctrl { display: flex; align-items: center; justify-content: center; gap: 5px; }
-  .vang-ctrl button { width: 24px; height: 24px; border-radius: 6px; border: 1px solid #c5cae9; background: #fff; color: #1565C0; cursor: pointer; font-size: 15px; font-weight: 700; line-height: 1; transition: background 0.15s; display: flex; align-items: center; justify-content: center; }
-  .vang-ctrl button:hover { background: #e8f0fe; }
-  .vang-num { font-weight: 600; min-width: 28px; text-align: center; font-size: 13px; }
-  .cc-badge { display: inline-block; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 99px; }
-  .cc-ok { background: #E8F5E9; color: #1B5E20; }
-  .cc-warn { background: #FFF8E1; color: #E65100; }
-  .cc-fail { background: #FFEBEE; color: #B71C1C; }
-  .stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-  .stat { background: #fff; border-radius: 10px; padding: 10px 18px; text-align: center; border: 1px solid #e3e8f0; min-width: 90px; }
-  .stat .n { font-size: 22px; font-weight: 700; color: #1565C0; }
-  .stat .l { font-size: 11px; color: #888; margin-top: 2px; }
-  .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-  .btn { font-size: 13px; padding: 8px 18px; border-radius: 8px; border: 1px solid #c5cae9; background: #fff; color: #1a1a2e; cursor: pointer; font-family: inherit; transition: background 0.15s, border 0.15s; font-weight: 500; }
-  .btn:hover { background: #e8f0fe; border-color: #1565C0; }
-  .btn.primary { background: #1565C0; border-color: #1565C0; color: #fff; }
-  .btn.primary:hover { background: #0D47A1; }
-  .btn:active { transform: scale(0.97); }
-  .note { font-size: 12px; color: #888; margin-top: 8px; }
-  .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: #666; margin-top: 8px; margin-bottom: 8px; }
-  .leg-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
-  @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr 1fr; } h1 { font-size: 17px; } }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;min-height:100vh;padding:20px 14px;color:#1a1a2e;}
+.container{max-width:1050px;margin:0 auto;}
+h1{font-size:20px;font-weight:700;color:#0D47A1;margin-bottom:14px;}
+.info-card{background:#fff;border-radius:10px;padding:12px 14px;border:1px solid #e3e8f0;margin-bottom:10px;}
+.info-card .lbl{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.info-grid input{padding:7px 10px;font-size:13px;border:1px solid #c5cae9;border-radius:7px;background:#fff;color:#1a1a2e;outline:none;width:100%;}
+.info-grid input:focus{border-color:#1565C0;}
+.cfg-row{display:flex;flex-wrap:wrap;align-items:center;gap:7px;font-size:13px;color:#555;}
+.cfg-row input{width:56px;padding:5px 8px;border:1px solid #c5cae9;border-radius:6px;font-size:13px;text-align:center;outline:none;}
+.info-save-btn{margin-top:9px;width:100%;padding:8px;font-size:13px;border-radius:8px;border:1px solid #1565C0;background:#1565C0;color:#fff;cursor:pointer;font-family:inherit;font-weight:600;}
+.info-save-btn:hover{background:#0D47A1;}
+.class-display{display:none;font-size:12px;color:#555;margin-bottom:10px;padding:7px 12px;background:#E3F2FD;border-radius:8px;border:1px solid #BBDEFB;}
+.class-display span{color:#0D47A1;font-weight:600;}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#666;margin-bottom:8px;}
+.leg-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:middle;}
+.table-wrap{border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(21,101,192,.08);}
+table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;table-layout:fixed;}
+col.c1{width:36px;}col.c2{width:22%;}col.c3{width:16%;}col.c4{width:10%;}
+col.c5{width:17%;}col.c6{width:14%;}col.c7{width:9%;}col.c8{width:76px;}
+thead tr{background:#1565C0;}
+thead th{color:#fff;font-weight:600;padding:10px 6px;text-align:center;font-size:12px;white-space:nowrap;overflow:hidden;}
+th.th-l{text-align:left;padding-left:8px;}
+tbody tr:nth-child(even){background:#f5f8ff;}
+tbody tr:hover{background:#e8f0fe;}
+tbody td{padding:6px 5px;border-bottom:.5px solid #e0e6f0;vertical-align:middle;text-align:center;overflow:hidden;}
+tbody tr:last-child td{border-bottom:none;}
+.td-name{text-align:left!important;padding-left:8px!important;}
+input.ci{border:none;background:transparent;font-size:13px;color:#1a1a2e;font-family:inherit;width:100%;outline:none;min-width:0;}
+input.ci:focus{background:#EEF2FF;border-radius:3px;}
+input.ci.msv{color:#1565C0;text-align:center;}
+input.ci.lop{text-align:center;}
+.bar-wrap{position:relative;background:#e0e0e0;border-radius:6px;height:24px;cursor:pointer;user-select:none;overflow:hidden;}
+.bar-r{position:absolute;top:0;left:0;height:100%;background:#E53935;border-radius:6px 0 0 6px;}
+.bar-g{position:absolute;top:0;height:100%;background:#43A047;}
+.bar-lbl{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:700;color:#fff;pointer-events:none;z-index:2;white-space:nowrap;}
+.vc{display:flex;align-items:center;justify-content:center;gap:3px;}
+.vc button{width:20px;height:20px;border-radius:5px;border:1px solid #c5cae9;background:#fff;color:#1565C0;cursor:pointer;font-size:14px;font-weight:700;line-height:1;display:flex;align-items:center;justify-content:center;}
+.vc button:hover{background:#e8f0fe;}
+.vn{font-weight:600;min-width:20px;text-align:center;font-size:13px;}
+.badge{display:inline-block;font-size:12px;font-weight:600;padding:3px 8px;border-radius:99px;}
+.b-ok{background:#E8F5E9;color:#1B5E20;}
+.b-warn{background:#FFF8E1;color:#E65100;}
+.b-fail{background:#FFEBEE;color:#B71C1C;}
+.act{display:flex;align-items:center;justify-content:center;gap:4px;}
+.btn-save{padding:3px 8px;font-size:11px;border-radius:5px;border:1px solid #43A047;color:#2E7D32;background:transparent;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.btn-save:hover{background:#E8F5E9;}
+.btn-save.unsaved{font-weight:700;border-color:#1565C0;color:#1565C0;}
+.btn-del{padding:3px 8px;font-size:13px;border-radius:5px;border:1px solid #EF9A9A;color:#C62828;background:transparent;cursor:pointer;font-family:inherit;line-height:1;}
+.btn-del:hover{background:#FFEBEE;}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.stat{background:#fff;border-radius:10px;padding:8px 14px;text-align:center;border:1px solid #e3e8f0;flex:1;min-width:70px;}
+.stat .n{font-size:20px;font-weight:700;color:#1565C0;}
+.stat .l{font-size:11px;color:#888;margin-top:2px;}
+.btn-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;}
+.btn{font-size:13px;padding:8px 16px;border-radius:8px;border:1px solid #c5cae9;background:#fff;color:#1a1a2e;cursor:pointer;font-family:inherit;}
+.btn:hover{background:#e8f0fe;border-color:#1565C0;}
+.btn.pri{background:#1565C0;border-color:#1565C0;color:#fff;}
+.btn.pri:hover{background:#0D47A1;}
+.saved-toast{position:fixed;bottom:18px;right:18px;background:#2E7D32;color:#fff;font-size:13px;padding:8px 18px;border-radius:8px;opacity:0;transition:opacity .3s;pointer-events:none;}
+.saved-toast.show{opacity:1;}
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>📋 Bảng Điểm Danh Sinh Viên</h1>
+<h1>📋 Bảng Điểm Danh Sinh Viên</h1>
+
+<div class="info-card">
+  <div class="lbl">Thông tin lớp học</div>
   <div class="info-grid">
-    <input type="text" id="className" placeholder="Tên môn học" />
-    <input type="text" id="maMonHoc" placeholder="Mã môn học" />
-    <input type="text" id="teacher" placeholder="Giáo viên" />
-    <input type="date" id="dateField" />
+    <input type="text" id="className" placeholder="Tên môn học"/>
+    <input type="text" id="maMonHoc" placeholder="Mã môn học"/>
+    <input type="text" id="teacher" placeholder="Giáo viên"/>
+    <input type="date" id="dateField"/>
   </div>
   <div class="cfg-row">
-    <span>Tổng tiết môn:</span>
-    <input type="number" id="tongTiet" value="60" min="1" step="1" oninput="renderAll()" />
+    <span>Tổng tiết:</span>
+    <input type="number" id="tongTiet" value="60" min="1" step="1"/>
     <span>tiết &nbsp;|&nbsp; Tiết/buổi:</span>
-    <input type="number" id="tietBuoi" value="3" min="1" step="1" oninput="renderAll()" />
+    <input type="number" id="tietBuoi" value="3" min="1" step="1"/>
     <span>tiết &nbsp;|&nbsp; Hệ số CC:</span>
-    <input type="number" id="heSoCC" value="40" min="1" max="100" step="1" oninput="renderAll()" />
+    <input type="number" id="heSoCC" value="40" min="1" max="100" step="1"/>
     <span>%</span>
   </div>
-  <div class="legend">
-    <span><span class="leg-dot" style="background:#43A047;"></span>Đạt (≥80%)</span>
-    <span><span class="leg-dot" style="background:#FFA726;"></span>Cảnh báo (60–79%)</span>
-    <span><span class="leg-dot" style="background:#E53935;"></span>Không đạt (<60%)</span>
-    <span style="color:#1565C0;">💡 Bấm vào thanh để thêm buổi vắng</span>
-  </div>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th style="width:46px;">STT</th>
-          <th class="td-name">Họ và tên</th>
-          <th class="td-msv">Mã sinh viên</th>
-          <th class="td-lop">Lớp hành chính</th>
-          <th class="td-bar">Tình hình đi học</th>
-          <th class="td-tiet">Tổng tiết vắng</th>
-          <th class="td-cc">Điểm chuyên cần</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-  </div>
-  <div class="stats" id="stats"></div>
-  <div class="btn-row">
-    <button class="btn" onclick="addRow()">+ Thêm sinh viên</button>
-    <button class="btn" onclick="clearAll()">Xóa trắng</button>
-    <button class="btn" onclick="copyTable()">Sao chép bảng</button>
-    <button class="btn primary" onclick="exportTxt()">Xuất báo cáo (.txt)</button>
-  </div>
-  <div class="note" id="note"></div>
+  <button class="info-save-btn" onclick="saveMeta()">💾 Lưu thông tin lớp & cập nhật bảng</button>
 </div>
+
+<div class="class-display" id="classDisplay">
+  Môn: <span id="dispMon"></span> &nbsp;·&nbsp; GV: <span id="dispGV"></span> &nbsp;·&nbsp; <span id="dispDate"></span>
+</div>
+
+<div class="legend">
+  <span><span class="leg-dot" style="background:#43A047;"></span>Đạt (≥80%)</span>
+  <span><span class="leg-dot" style="background:#FFA726;"></span>Cảnh báo (60–79%)</span>
+  <span><span class="leg-dot" style="background:#E53935;"></span>Không đạt (&lt;60%)</span>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <colgroup>
+      <col class="c1"/><col class="c2"/><col class="c3"/><col class="c4"/>
+      <col class="c5"/><col class="c6"/><col class="c7"/><col class="c8"/>
+    </colgroup>
+    <thead><tr>
+      <th>#</th><th class="th-l">Họ và tên</th><th>Mã sinh viên</th>
+      <th>Lớp</th><th>Đi học</th><th>Tiết vắng</th><th>Điểm CC</th><th>Thao tác</th>
+    </tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<div class="stats" id="stats"></div>
+<div class="btn-row">
+  <button class="btn" onclick="addRow()">+ Thêm sinh viên</button>
+  <button class="btn" onclick="clearAll()">Xóa trắng</button>
+  <button class="btn pri" onclick="exportTxt()">Xuất báo cáo (.txt)</button>
+</div>
+</div>
+
+<div class="saved-toast" id="toast">✓ Đã lưu</div>
+
 <script>
-const defaultStudents = [
+const DEF=[
   {name:"Ninh Tuấn Minh",msv:"2512101094",lop:"CT2903",vang:0},
   {name:"Phạm Ngọc Nam",msv:"2512101046",lop:"CT2903",vang:0},
   {name:"Vũ Duy Nguyên",msv:"2512101118",lop:"CT2903",vang:3},
@@ -128,26 +146,35 @@ const defaultStudents = [
   {name:"Nguyễn Anh Tuấn",msv:"2512101006",lop:"CT2903",vang:0},
   {name:"Vũ Văn Tuấn",msv:"2512101115",lop:"CT2903",vang:0},
 ];
-document.getElementById('dateField').value = new Date().toISOString().split('T')[0];
+function today(){return new Date().toISOString().split('T')[0];}
+document.getElementById('dateField').value=today();
+let toastTimer;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg||'✓ Đã lưu';t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2000);}
+function saveMeta(){const meta={className:document.getElementById('className').value,maMonHoc:document.getElementById('maMonHoc').value,teacher:document.getElementById('teacher').value,dateField:document.getElementById('dateField').value,tongTiet:document.getElementById('tongTiet').value,tietBuoi:document.getElementById('tietBuoi').value,heSoCC:document.getElementById('heSoCC').value};try{localStorage.setItem('bdds_meta',JSON.stringify(meta));}catch(e){}updateClassDisplay(meta);renderAll();showToast('✓ Đã lưu thông tin lớp');}
+function updateClassDisplay(meta){const mon=meta.className||meta.maMonHoc;const cd=document.getElementById('classDisplay');if(!mon&&!meta.teacher){cd.style.display='none';return;}cd.style.display='block';document.getElementById('dispMon').textContent=(meta.className||'')+(meta.maMonHoc?' ('+meta.maMonHoc+')':'');document.getElementById('dispGV').textContent=meta.teacher||'—';document.getElementById('dispDate').textContent=meta.dateField||'';}
+function saveRows(){const rows=[...document.querySelectorAll('#tbody tr')].map(tr=>({name:tr.querySelector('.ci.name').value,msv:tr.querySelector('.ci.msv').value,lop:tr.querySelector('.ci.lop').value,vang:parseInt(tr.dataset.vang)||0}));try{localStorage.setItem('bdds_rows',JSON.stringify(rows));}catch(e){}}
+function loadAll(){try{const m=localStorage.getItem('bdds_meta');const r=localStorage.getItem('bdds_rows');if(m){const meta=JSON.parse(m);document.getElementById('className').value=meta.className||'';document.getElementById('maMonHoc').value=meta.maMonHoc||'';document.getElementById('teacher').value=meta.teacher||'';document.getElementById('dateField').value=meta.dateField||today();document.getElementById('tongTiet').value=meta.tongTiet||60;document.getElementById('tietBuoi').value=meta.tietBuoi||3;document.getElementById('heSoCC').value=meta.heSoCC||40;updateClassDisplay(meta);}render(r?JSON.parse(r):DEF);}catch(e){render(DEF);}}
 const getTong=()=>parseInt(document.getElementById('tongTiet').value)||60;
 const getTietBuoi=()=>parseInt(document.getElementById('tietBuoi').value)||3;
 const getHeSo=()=>parseInt(document.getElementById('heSoCC').value)||40;
-function calcCC(vangTiet){const tong=getTong();const pct=Math.max(0,(tong-vangTiet)/tong);const diem=Math.round(pct*getHeSo()*10)/10;return{pct:Math.round(pct*100),diem};}
-function ccBadge(diem){const max=getHeSo();const r=diem/max;const cls=r>=0.8?'cc-ok':r>=0.6?'cc-warn':'cc-fail';return`<span class="cc-badge ${cls}">${diem.toFixed(1)}</span>`;}
-function buildRow(d,i){const tr=document.createElement('tr');const vangBuoi=d.vang||0;const vangTiet=vangBuoi*getTietBuoi();tr.dataset.vang=vangBuoi;const{pct,diem}=calcCC(vangTiet);const redW=Math.min(100-pct,100);tr.innerHTML=`<td>${i+1}</td><td class="td-name"><input class="cell-input" value="${d.name}" placeholder="Họ và tên"/></td><td class="td-msv"><input class="cell-input msv" value="${d.msv}" placeholder="Mã SV"/></td><td class="td-lop"><input class="cell-input lop" value="${d.lop||'CT2903'}" placeholder="Lớp"/></td><td class="td-bar"><div class="bar-wrap" title="Bấm để cộng thêm 1 buổi vắng"><div class="bar-red" style="width:${redW}%"></div><div class="bar-green" style="left:${redW}%;width:${pct}%"></div><div class="bar-label">${pct}%</div></div></td><td class="td-tiet"><div class="vang-ctrl"><button onclick="changeVang(this,-1)">−</button><span class="vang-num">${vangTiet}</span><button onclick="changeVang(this,1)">+</button></div></td><td class="td-cc">${ccBadge(diem)}</td>`;tr.querySelector('.bar-wrap').addEventListener('click',()=>{adjustVang(tr,1);});return tr;}
-function updateRowUI(tr){const vangBuoi=parseInt(tr.dataset.vang)||0;const vangTiet=vangBuoi*getTietBuoi();const{pct,diem}=calcCC(vangTiet);const redW=Math.min(100-pct,100);tr.querySelector('.bar-red').style.width=redW+'%';tr.querySelector('.bar-green').style.left=redW+'%';tr.querySelector('.bar-green').style.width=pct+'%';tr.querySelector('.bar-label').textContent=pct+'%';tr.querySelector('.vang-num').textContent=vangTiet;tr.cells[6].innerHTML=ccBadge(diem);}
-function adjustVang(tr,delta){let v=parseInt(tr.dataset.vang)||0;v=Math.max(0,v+delta);tr.dataset.vang=v;updateRowUI(tr);updateStats();}
-function changeVang(btn,delta){adjustVang(btn.closest('tr'),delta);}
-function renderAll(){document.querySelectorAll('#tbody tr').forEach(tr=>updateRowUI(tr));updateStats();}
-function updateStats(){const rows=[...document.querySelectorAll('#tbody tr')];let ok=0,warn=0,fail=0,tongVang=0;rows.forEach(tr=>{const v=parseInt(tr.dataset.vang)||0;const vT=v*getTietBuoi();tongVang+=vT;const{pct}=calcCC(vT);if(pct>=80)ok++;else if(pct>=60)warn++;else fail++;});document.getElementById('stats').innerHTML=`<div class="stat"><div class="n">${rows.length}</div><div class="l">Tổng SV</div></div><div class="stat"><div class="n" style="color:#2E7D32;">${ok}</div><div class="l">Đạt CC (≥80%)</div></div><div class="stat"><div class="n" style="color:#E65100;">${warn}</div><div class="l">Cảnh báo CC</div></div><div class="stat"><div class="n" style="color:#B71C1C;">${fail}</div><div class="l">Không đạt CC</div></div><div class="stat"><div class="n" style="color:#555;">${tongVang}</div><div class="l">Tổng tiết vắng</div></div>`;}
-function addRow(){const tbody=document.getElementById('tbody');tbody.appendChild(buildRow({name:'',msv:'',lop:'CT2903',vang:0},tbody.rows.length));updateStats();}
-function clearAll(){if(!confirm('Xóa toàn bộ dữ liệu?'))return;document.getElementById('tbody').innerHTML='';updateStats();}
-function getDataExport(){return[...document.querySelectorAll('#tbody tr')].map((tr,i)=>{const v=parseInt(tr.dataset.vang)||0;const vT=v*getTietBuoi();const{pct,diem}=calcCC(vT);return{stt:i+1,name:tr.cells[1].querySelector('input').value,msv:tr.cells[2].querySelector('input').value,lop:tr.cells[3].querySelector('input').value,vangTiet:vT,pct,diem};});}
-function copyTable(){const data=getDataExport();let txt='STT\tHọ và tên\tMã SV\tLớp\tTiết vắng\t% Đi học\tĐiểm CC\n';data.forEach(r=>{txt+=`${r.stt}\t${r.name}\t${r.msv}\t${r.lop}\t${r.vangTiet}\t${r.pct}%\t${r.diem.toFixed(1)}\n`;});navigator.clipboard.writeText(txt).then(()=>{showNote('✓ Đã sao chép — dán vào Excel được luôn');});}
-function exportTxt(){const cls=document.getElementById('className').value||'(chưa nhập)';const ma=document.getElementById('maMonHoc').value||'';const teacher=document.getElementById('teacher').value||'(chưa nhập)';const date=document.getElementById('dateField').value||'';const tong=getTong();const hs=getHeSo();const data=getDataExport();const header=`BẢNG ĐIỂM DANH SINH VIÊN\nMôn: ${cls}${ma?' ('+ma+')':''} | GV: ${teacher}${date?' | Ngày: '+date:''}\nTổng tiết: ${tong} | Hệ số CC: ${hs}%\n${'─'.repeat(80)}\n${'STT'.padEnd(5)}${'Họ và tên'.padEnd(28)}${'Mã SV'.padEnd(14)}${'Lớp'.padEnd(9)}${'Tiết vắng'.padEnd(12)}${'% Đi học'.padEnd(11)}Điểm CC\n${'─'.repeat(80)}`;const rows=data.map(r=>`${String(r.stt).padEnd(5)}${r.name.padEnd(28)}${r.msv.padEnd(14)}${r.lop.padEnd(9)}${String(r.vangTiet).padEnd(12)}${(r.pct+'%').padEnd(11)}${r.diem.toFixed(1)}`).join('\n');const failList=data.filter(r=>r.pct<60).map(r=>`  - ${r.name} (${r.msv}) — ${r.pct}%`).join('\n')||'  Không có';const warnList=data.filter(r=>r.pct>=60&&r.pct<80).map(r=>`  - ${r.name} (${r.msv}) — ${r.pct}%`).join('\n')||'  Không có';const footer=`${'─'.repeat(80)}\nCẢNH BÁO CC (60–79%):\n${warnList}\n\nKHÔNG ĐẠT CC (<60%):\n${failList}`;const blob=new Blob([header+'\n'+rows+'\n'+footer],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`diemdanh_${cls.replace(/\s+/g,'_')||'monhoc'}.txt`;a.click();URL.revokeObjectURL(url);showNote('✓ Đã tải xuống báo cáo');}
-function showNote(msg){const n=document.getElementById('note');n.textContent=msg;setTimeout(()=>n.textContent='',3000);}
+function calcCC(vT){const pct=Math.max(0,(getTong()-vT)/getTong());return{pct:Math.round(pct*100),diem:Math.round(pct*getHeSo()*10)/10};}
+function ccBadge(diem){const r=diem/getHeSo();return`<span class="badge ${r>=0.8?'b-ok':r>=0.6?'b-warn':'b-fail'}">${diem.toFixed(1)}</span>`;}
+function escH(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function buildRow(d,i){const tr=document.createElement('tr');const vB=d.vang||0;const vT=vB*getTietBuoi();tr.dataset.vang=vB;const{pct,diem}=calcCC(vT);const rW=Math.min(100-pct,100);tr.innerHTML=`<td style="font-size:11px;color:#888;text-align:center;">${i+1}</td><td class="td-name"><input class="ci name" value="${escH(d.name)}" placeholder="Họ và tên"/></td><td><input class="ci msv" value="${escH(d.msv)}" placeholder="Mã SV"/></td><td><input class="ci lop" value="${escH(d.lop||'CT2903')}" placeholder="Lớp"/></td><td><div class="bar-wrap" onclick="adjVang(this.closest('tr'),1)" title="Bấm để thêm buổi vắng"><div class="bar-r" style="width:${rW}%"></div><div class="bar-g" style="left:${rW}%;width:${pct}%"></div><div class="bar-lbl">${pct}%</div></div></td><td><div class="vc"><button onclick="chgVang(this,-1)">−</button><span class="vn">${vT}</span><button onclick="chgVang(this,1)">+</button></div></td><td>${ccBadge(diem)}</td><td><div class="act"><button class="btn-save" onclick="saveRow(this)">Lưu</button><button class="btn-del" onclick="delRow(this)">×</button></div></td>`;tr.querySelector('.ci.name').addEventListener('input',()=>markUnsaved(tr));tr.querySelector('.ci.msv').addEventListener('input',()=>markUnsaved(tr));tr.querySelector('.ci.lop').addEventListener('input',()=>markUnsaved(tr));return tr;}
+function markUnsaved(tr){tr.querySelector('.btn-save').classList.add('unsaved');}
+function saveRow(btn){btn.classList.remove('unsaved');saveRows();showToast('✓ Đã lưu sinh viên');}
+function updRow(tr){const vT=(parseInt(tr.dataset.vang)||0)*getTietBuoi();const{pct,diem}=calcCC(vT);const rW=Math.min(100-pct,100);tr.querySelector('.bar-r').style.width=rW+'%';tr.querySelector('.bar-g').style.left=rW+'%';tr.querySelector('.bar-g').style.width=pct+'%';tr.querySelector('.bar-lbl').textContent=pct+'%';tr.querySelector('.vn').textContent=vT;tr.cells[6].innerHTML=ccBadge(diem);}
+function adjVang(tr,delta){tr.dataset.vang=Math.max(0,(parseInt(tr.dataset.vang)||0)+delta);updRow(tr);updateStats();saveRows();showToast('✓ Đã lưu');}
+function chgVang(btn,delta){adjVang(btn.closest('tr'),delta);}
+function delRow(btn){if(!confirm('Xóa sinh viên này?'))return;btn.closest('tr').remove();renumber();updateStats();saveRows();}
+function renumber(){document.querySelectorAll('#tbody tr').forEach((tr,i)=>tr.cells[0].textContent=i+1);}
+function renderAll(){document.querySelectorAll('#tbody tr').forEach(tr=>updRow(tr));updateStats();}
+function updateStats(){const rows=[...document.querySelectorAll('#tbody tr')];let ok=0,warn=0,fail=0,tv=0;rows.forEach(tr=>{const vT=(parseInt(tr.dataset.vang)||0)*getTietBuoi();tv+=vT;const{pct}=calcCC(vT);if(pct>=80)ok++;else if(pct>=60)warn++;else fail++;});document.getElementById('stats').innerHTML=`<div class="stat"><div class="n">${rows.length}</div><div class="l">Tổng SV</div></div><div class="stat"><div class="n" style="color:#2E7D32;">${ok}</div><div class="l">Đạt CC (≥80%)</div></div><div class="stat"><div class="n" style="color:#E65100;">${warn}</div><div class="l">Cảnh báo</div></div><div class="stat"><div class="n" style="color:#B71C1C;">${fail}</div><div class="l">Không đạt</div></div><div class="stat"><div class="n" style="color:#555;">${tv}</div><div class="l">Tổng tiết vắng</div></div>`;}
+function addRow(){const tbody=document.getElementById('tbody');const tr=buildRow({name:'',msv:'',lop:'CT2903',vang:0},tbody.rows.length);tbody.appendChild(tr);tr.querySelector('.ci.name').focus();updateStats();}
+function clearAll(){if(!confirm('Xóa toàn bộ danh sách sinh viên?'))return;document.getElementById('tbody').innerHTML='';updateStats();saveRows();}
+function exportTxt(){const cls=document.getElementById('className').value||'(chưa nhập)';const ma=document.getElementById('maMonHoc').value||'';const gv=document.getElementById('teacher').value||'(chưa nhập)';const date=document.getElementById('dateField').value||'';const tong=getTong();const hs=getHeSo();const data=[...document.querySelectorAll('#tbody tr')].map((tr,i)=>{const vT=(parseInt(tr.dataset.vang)||0)*getTietBuoi();const{pct,diem}=calcCC(vT);return{stt:i+1,name:tr.querySelector('.ci.name').value,msv:tr.querySelector('.ci.msv').value,lop:tr.querySelector('.ci.lop').value,vT,pct,diem};});const sep='─'.repeat(78);const hdr=`BẢNG ĐIỂM DANH SINH VIÊN\nMôn: ${cls}${ma?' ('+ma+')':''} | GV: ${gv}${date?' | Ngày: '+date:''}\nTổng tiết: ${tong} | Hệ số CC: ${hs}%\n${sep}\n${'STT'.padEnd(5)}${'Họ và tên'.padEnd(26)}${'Mã SV'.padEnd(14)}${'Lớp'.padEnd(9)}${'Tiết vắng'.padEnd(11)}${'% Đi học'.padEnd(11)}Điểm CC\n${sep}`;const rows=data.map(r=>`${String(r.stt).padEnd(5)}${r.name.padEnd(26)}${r.msv.padEnd(14)}${r.lop.padEnd(9)}${String(r.vT).padEnd(11)}${(r.pct+'%').padEnd(11)}${r.diem.toFixed(1)}`).join('\n');const wL=data.filter(r=>r.pct>=60&&r.pct<80).map(r=>`  - ${r.name} (${r.msv}) — ${r.pct}%`).join('\n')||'  Không có';const fL=data.filter(r=>r.pct<60).map(r=>`  - ${r.name} (${r.msv}) — ${r.pct}%`).join('\n')||'  Không có';const blob=new Blob([hdr+'\n'+rows+'\n'+sep+'\nCẢNH BÁO CC (60–79%):\n'+wL+'\n\nKHÔNG ĐẠT CC (<60%):\n'+fL],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`diemdanh_${cls.replace(/\s+/g,'_')}.txt`;a.click();}
 function render(data){const tbody=document.getElementById('tbody');tbody.innerHTML='';data.forEach((d,i)=>tbody.appendChild(buildRow(d,i)));updateStats();}
-render(defaultStudents);
+loadAll();
 </script>
 </body>
 </html>
